@@ -8,7 +8,7 @@ class Database {
     private $host = '127.0.0.1';
     private $db_name = 'tabletalk';
     private $username = 'root';
-    private $password = ''; // Default XAMPP password
+    private $password = '1234'; // Default XAMPP password
     private $conn;
 
     public function connect() {
@@ -20,9 +20,9 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
-            // For production, log error instead of outputting. 
-            // For local development portfolio, outputting is fine.
-            echo "Connection Error: " . $e->getMessage();
+            http_response_code(500);
+            echo json_encode(['error' => 'Database connection failed. Please check your password in Core/Database.php. Details: ' . $e->getMessage()]);
+            exit();
         }
 
         return $this->conn;
