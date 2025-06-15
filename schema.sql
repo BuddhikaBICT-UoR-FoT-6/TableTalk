@@ -14,22 +14,24 @@ CREATE TABLE IF NOT EXISTS users (
 -- menu_items (id, name, price, category, is_available)
 CREATE TABLE IF NOT EXISTS menu_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
-    category VARCHAR(100) NOT NULL,
+    rating DECIMAL(3,1) DEFAULT 4.5,
     image_url VARCHAR(255),
     is_available BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- orders (id, table_id, status: pending/preparing/ready/served/paid, estimated_wait_minutes, total_amount, created_at)
+-- orders (id, table_id, status, estimated_wait_minutes, total_amount, notes, created_at, updated_at)
 CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     table_id VARCHAR(50) NOT NULL,
-    status ENUM('pending', 'preparing', 'ready', 'served', 'paid') DEFAULT 'pending',
+    status ENUM('pending', 'preparing', 'ready', 'served', 'paid', 'cancelled') DEFAULT 'pending',
     estimated_wait_minutes INT DEFAULT 15,
     total_amount DECIMAL(10, 2) DEFAULT 0.00,
+    notes TEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -64,6 +66,16 @@ CREATE TABLE IF NOT EXISTS feedback (
     comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
+-- messages (id, table_id, sender, message, is_read, created_at)
+CREATE TABLE IF NOT EXISTS messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    table_id VARCHAR(50) NOT NULL,
+    sender ENUM('chef', 'table') DEFAULT 'chef',
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Seed Data

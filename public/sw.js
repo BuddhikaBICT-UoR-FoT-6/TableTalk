@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tabletalk-v1';
+const CACHE_NAME = 'tabletalk-v2';
 const ASSETS = [
     './',
     './index.html',
@@ -8,9 +8,25 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (e) => {
+    self.skipWaiting(); // Force the waiting service worker to become the active service worker
     e.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
     );
+});
+
+self.addEventListener('activate', (e) => {
+    e.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
+    );
+    self.clients.claim(); // Claim control immediately
 });
 
 self.addEventListener('fetch', (e) => {
@@ -19,9 +35,8 @@ self.addEventListener('fetch', (e) => {
         return;
     }
     
+    // Network First strategy for HTML/JS/CSS to ensure updates are fetched
     e.respondWith(
-        caches.match(e.request).then((response) => {
-            return response || fetch(e.request);
-        })
+        fetch(e.request).catch(() => caches.match(e.request))
     );
 });
