@@ -26,9 +26,9 @@ class KitchenController {
         $orderId = $params['id'];
         $data = json_decode(file_get_contents("php://input"));
 
-        if (!isset($data->status) || !isset($data->estimated_wait_minutes)) {
+        if (!isset($data->status)) {
             http_response_code(400);
-            echo json_encode(['error' => 'Status and estimated wait minutes are required']);
+            echo json_encode(['error' => 'Status is required']);
             return;
         }
 
@@ -40,7 +40,11 @@ class KitchenController {
         }
 
         $orderModel = new Order();
-        $updated = $orderModel->updateStatus($orderId, $data->status, $data->estimated_wait_minutes);
+        $existingOrder = $orderModel->findById($orderId);
+        
+        $estimatedWait = isset($data->estimated_wait_minutes) ? $data->estimated_wait_minutes : $existingOrder['estimated_wait_minutes'];
+        
+        $updated = $orderModel->updateStatus($orderId, $data->status, $estimatedWait);
 
         if ($updated) {
             echo json_encode(['message' => 'Order updated successfully']);

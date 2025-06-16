@@ -41,8 +41,13 @@ class OrderController {
             ];
         }
 
+        // Dynamic wait time: 10 mins base + 5 mins per active order
+        $activeOrders = $orderModel->getActiveOrderCount();
+        $estimatedWait = 10 + ($activeOrders * 5);
+        $notes = isset($data->notes) ? $data->notes : null;
+
         // Create order
-        $orderId = $orderModel->create($tokenPayload['sub'], $totalAmount);
+        $orderId = $orderModel->create($tokenPayload['sub'], $totalAmount, $estimatedWait, $notes);
 
         // Create order items
         foreach ($processedItems as $pItem) {
@@ -54,7 +59,7 @@ class OrderController {
             'message' => 'Order created successfully',
             'order_id' => $orderId,
             'status' => 'pending',
-            'estimated_wait_minutes' => 15,
+            'estimated_wait_minutes' => $estimatedWait,
             'total_amount' => $totalAmount
         ]);
     }
@@ -85,5 +90,21 @@ class OrderController {
         $order['items'] = $items;
 
         echo json_encode(['data' => $order]);
+    }
+
+    public function getActiveForTable() {
+        $tokenPayload = JWT::requireRole(['customer']);
+        $orderModel = new Order();
+        $orders = $orderModel->getActiveOrdersForTable($tokenPayload['sub']);
+        
+        if ($orders && count($orders) > 0) {
+            $orderItemModel = new OrderItem();
+            foreach ($orders as &$order) {
+                $order['items'] = $orderItemModel->getByOrderId($order['id']);
+            }
+            echo json_encode(['data' => $orders]);
+        } else {
+            echo json_encode(['data' => []]);
+        }
     }
 }

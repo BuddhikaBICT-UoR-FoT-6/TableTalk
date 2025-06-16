@@ -27,4 +27,16 @@ class MenuItem {
         $stmt->execute();
         return $stmt->fetch();
     }
+
+    public function create($name, $category, $price, $description, $rating, $image_url = null) {
+        $query = "INSERT INTO " . $this->table . " (name, category, price, description, rating, image_url) VALUES (:name, :category, :price, :description, :rating, :image_url)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':category', $category);
+        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':rating', $rating);
+        $stmt->bindParam(':image_url', $image_url);
+        return $stmt->execute();
+    }
 }

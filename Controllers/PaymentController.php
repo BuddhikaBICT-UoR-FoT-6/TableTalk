@@ -50,6 +50,14 @@ class PaymentController {
         $success = $paymentModel->process($data->order_id, $data->amount, $data->method);
 
         if ($success) {
+            // Check if there are other active orders for the table
+            $activeOrders = $orderModel->getActiveOrdersForTable($order['table_id']);
+            if (empty($activeOrders)) {
+                // Clear chat messages for this table
+                $messageModel = new \Models\Message();
+                $messageModel->clearTableMessages($order['table_id']);
+            }
+
             echo json_encode(['message' => 'Payment processed successfully']);
         } else {
             http_response_code(500);
