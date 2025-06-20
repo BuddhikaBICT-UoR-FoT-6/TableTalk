@@ -11,6 +11,15 @@ class Database {
     private $password = '1234'; // Default XAMPP password
     private $conn;
 
+    /**
+     * Establishes a connection to the MySQL database.
+     * 
+     * Configures the connection using the class's private credentials,
+     * enables exceptions on database errors, and sets the default fetch mode
+     * to associative array.
+     *
+     * @return \PDO The PDO connection instance.
+     */
     public function connect() {
         $this->conn = null;
 
