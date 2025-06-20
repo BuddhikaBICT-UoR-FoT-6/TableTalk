@@ -5,6 +5,12 @@ use Core\JWT;
 use Models\Order;
 
 class ReceiptController {
+    /**
+     * Sends an HTML email receipt to the customer's email address.
+     * Generates a receipt template, logs the transaction, and saves a mock HTML file on disk.
+     *
+     * @return void
+     */
     public function send() {
         JWT::requireRole(['customer']);
         
