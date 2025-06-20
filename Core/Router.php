@@ -4,6 +4,14 @@ namespace Core;
 class Router {
     private $routes = [];
 
+    /**
+     * Registers a route in the application router.
+     *
+     * @param string $method The HTTP method (e.g., GET, POST).
+     * @param string $uri The URI pattern for the route.
+     * @param string $controllerAction The controller and method string in "Controller@method" format.
+     * @return void
+     */
     public function add($method, $uri, $controllerAction) {
         $this->routes[] = [
             'method' => $method,
@@ -12,6 +20,17 @@ class Router {
         ];
     }
 
+    /**
+     * Dispatches the incoming HTTP request to the matching controller action.
+     * 
+     * Parses the URI, resolves subdirectory pathways, performs regex matching
+     * for route parameters, and invokes the target controller method if found.
+     * Responds with 404 if no matching route is found.
+     *
+     * @param string $requestUri The requested URI.
+     * @param string $requestMethod The HTTP method of the request.
+     * @return void
+     */
     public function dispatch($requestUri, $requestMethod) {
         // Remove query string from URI
         $requestUri = parse_url($requestUri, PHP_URL_PATH);
