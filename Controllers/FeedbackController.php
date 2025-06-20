@@ -6,6 +6,12 @@ use Models\Feedback;
 use Models\Order;
 
 class FeedbackController {
+    /**
+     * Submits a customer feedback for a paid order.
+     * Validates that the order exists, belongs to the customer table, and is fully paid.
+     *
+     * @return void
+     */
     public function create() {
         // Customers submit feedback
         $tokenPayload = JWT::requireRole(['customer']);
@@ -54,6 +60,12 @@ class FeedbackController {
         }
     }
 
+    /**
+     * Retrieves overall aggregate feedback statistics and lists all feedback comments.
+     * Accessible by chefs and admins.
+     *
+     * @return void
+     */
     public function index() {
         JWT::requireRole(['chef', 'admin']);
 
