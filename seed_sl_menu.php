@@ -1,4 +1,9 @@
 <?php
+/**
+ * Sri Lankan menu reseeding script.
+ * Clears existing transactional tables and populates the menu_items
+ * table with a fresh set of authentic Sri Lankan dishes, drinks, and desserts.
+ */
 require 'Core/Database.php';
 
 use Core\Database;
