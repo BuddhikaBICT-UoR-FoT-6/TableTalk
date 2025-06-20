@@ -1,4 +1,9 @@
 <?php
+/**
+ * Feedback database seeding script.
+ * Populates the database with realistic sample customer feedback,
+ * corresponding mock orders, payment records, and order items.
+ */
 require_once __DIR__ . '/Core/Database.php';
 
 $db = new \Core\Database();
