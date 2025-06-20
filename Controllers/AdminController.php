@@ -6,6 +6,12 @@ use Models\Order;
 use Models\OrderItem;
 
 class AdminController {
+    /**
+     * Retrieves all orders along with their detailed items.
+     * Accessible only by users with the 'admin' role.
+     *
+     * @return void
+     */
     public function getOrders() {
         JWT::requireRole(['admin']);
 
