@@ -4,6 +4,12 @@ namespace Controllers;
 use Models\MenuItem;
 
 class MenuController {
+    /**
+     * Lists all available menu items.
+     * Publicly accessible.
+     *
+     * @return void
+     */
     public function index() {
         $menuModel = new MenuItem();
         $items = $menuModel->getAllAvailable();
@@ -11,6 +17,12 @@ class MenuController {
         echo json_encode(['data' => $items]);
     }
 
+    /**
+     * Adds a new dish to the menu.
+     * Accessible by chefs and admins. Handles file uploads for the dish image.
+     *
+     * @return void
+     */
     public function create() {
         // Need to check if chef or admin
         $headers = getallheaders();
@@ -70,6 +82,12 @@ class MenuController {
         }
     }
 
+    /**
+     * Retrieves all menu items regardless of availability.
+     * Accessible by chefs and admins.
+     *
+     * @return void
+     */
     public function getAll() {
         $headers = getallheaders();
         $token = isset($headers['Authorization']) ? str_replace('Bearer ', '', $headers['Authorization']) : null;
@@ -86,6 +104,13 @@ class MenuController {
         echo json_encode(['data' => $items]);
     }
 
+    /**
+     * Updates an existing menu item's details.
+     * Accessible by chefs and admins. Handles file uploads for replacing the dish image.
+     *
+     * @param array $params Contains route parameter keys, including 'id' of the menu item.
+     * @return void
+     */
     public function update($params) {
         $id = $params['id'] ?? null;
         if (!$id) {
@@ -145,6 +170,13 @@ class MenuController {
         }
     }
 
+    /**
+     * Performs a soft delete on a menu item.
+     * Accessible by chefs and admins.
+     *
+     * @param array $params Contains route parameter keys, including 'id' of the menu item.
+     * @return void
+     */
     public function delete($params) {
         $id = $params['id'] ?? null;
         if (!$id) {
