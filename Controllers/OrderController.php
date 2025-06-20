@@ -7,6 +7,13 @@ use Models\OrderItem;
 use Models\MenuItem;
 
 class OrderController {
+    /**
+     * Creates a new customer order.
+     * Validates that items exist and are available, calculates subtotal/total,
+     * computes dynamic estimated wait time, and writes order details.
+     *
+     * @return void
+     */
     public function create() {
         $tokenPayload = JWT::requireRole(['customer']);
         
@@ -64,6 +71,13 @@ class OrderController {
         ]);
     }
 
+    /**
+     * Retrieves details of a specific order, including order items.
+     * Customers are restricted to viewing only their own table's orders.
+     *
+     * @param array $params Contains route parameter keys, including 'id' of the order.
+     * @return void
+     */
     public function show($params) {
         // Table can only see their own orders, or chef/admin can see any
         $tokenPayload = JWT::requireRole(['customer', 'chef', 'admin']);
@@ -92,6 +106,11 @@ class OrderController {
         echo json_encode(['data' => $order]);
     }
 
+    /**
+     * Retrieves active orders for the currently authenticated customer table.
+     *
+     * @return void
+     */
     public function getActiveForTable() {
         $tokenPayload = JWT::requireRole(['customer']);
         $orderModel = new Order();
