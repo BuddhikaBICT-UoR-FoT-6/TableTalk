@@ -68,6 +68,8 @@ class MenuController {
             http_response_code(500);
             echo json_encode(['error' => 'Failed to add dish']);
         }
+    }
+
     public function getAll() {
         $headers = getallheaders();
         $token = isset($headers['Authorization']) ? str_replace('Bearer ', '', $headers['Authorization']) : null;
