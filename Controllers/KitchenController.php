@@ -6,6 +6,12 @@ use Models\Order;
 use Models\OrderItem;
 
 class KitchenController {
+    /**
+     * Retrieves all active orders (pending, preparing, ready) and their items for the kitchen dashboard.
+     * Accessible by chefs and admins.
+     *
+     * @return void
+     */
     public function index() {
         JWT::requireRole(['chef', 'admin']);
 
@@ -20,6 +26,13 @@ class KitchenController {
         echo json_encode(['data' => $orders]);
     }
 
+    /**
+     * Updates the status and estimated wait time of a specific order.
+     * Accessible by chefs and admins.
+     *
+     * @param array $params Contains route parameter keys, including 'id' of the order.
+     * @return void
+     */
     public function updateStatus($params) {
         JWT::requireRole(['chef', 'admin']);
 
