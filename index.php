@@ -29,7 +29,10 @@ $router->add('POST', '/api/auth/table', 'AuthController@tableLogin');
 
 // Menu routes
 $router->add('GET', '/api/menu', 'MenuController@index');
+$router->add('GET', '/api/menu/all', 'MenuController@getAll');
 $router->add('POST', '/api/menu', 'MenuController@create'); // Chef adds dish
+$router->add('POST', '/api/menu/update/:id', 'MenuController@update'); // Chef updates dish
+$router->add('DELETE', '/api/menu/:id', 'MenuController@delete'); // Chef deletes dish
 
 // Orders routes (Customer)
 $router->add('POST', '/api/orders', 'OrderController@create');

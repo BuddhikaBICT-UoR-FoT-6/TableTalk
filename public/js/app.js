@@ -37,6 +37,7 @@ let messageToast;
 let systemToastInstance;
 let chatOffcanvas;
 let cartModalInstance = null;
+let editDishModal;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Bootstrap components
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     systemToastInstance = new bootstrap.Toast(document.getElementById('systemToast'));
     chatOffcanvas = new bootstrap.Offcanvas(document.getElementById('chatOffcanvas'));
     cartModalInstance = new bootstrap.Modal(document.getElementById('cartModal'));
+    editDishModal = new bootstrap.Modal(document.getElementById('editDishModal'));
 
     // Login listeners
     document.getElementById('btn-login-table').addEventListener('click', loginTable);
@@ -988,6 +990,7 @@ window.switchChefTab = function(tab) {
         
         document.getElementById('chef-section-orders').classList.add('d-none');
         document.getElementById('chef-section-menu').classList.remove('d-none');
+        loadMenuAdmin();
     }
 };
 
@@ -1023,6 +1026,7 @@ window.submitNewDish = async function() {
         if (res.ok) {
             showNotification("Dish added successfully!", "success");
             document.getElementById('form-add-dish').reset();
+            loadMenuAdmin();
         } else {
             showNotification("Failed to add dish", "danger");
         }
@@ -1033,6 +1037,122 @@ window.submitNewDish = async function() {
         setLoading('btn-submit-dish', false, 'Add Dish to Menu');
     }
 };
+
+async function loadMenuAdmin() {
+    if (role !== 'chef' && role !== 'admin') return;
+    try {
+        const res = await fetch(`${API_BASE}/menu/all`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('admin-menu-body');
+        
+        // Save to global variable for editing later
+        window.adminMenuData = data.data;
+
+        if (data.data && data.data.length > 0) {
+            tbody.innerHTML = data.data.map(item => `
+                <tr>
+                    <td>#${item.id}</td>
+                    <td><img src="${item.image_url || 'https://via.placeholder.com/50'}" alt="img" class="rounded" style="width: 40px; height: 40px; object-fit: cover;"></td>
+                    <td class="fw-bold">${item.name}</td>
+                    <td><span class="badge bg-secondary">${item.category}</span></td>
+                    <td>$${parseFloat(item.price).toFixed(2)}</td>
+                    <td>
+                        <span class="badge ${item.is_available == 1 ? 'bg-success' : 'bg-danger'}">
+                            ${item.is_available == 1 ? 'Available' : 'Unavailable'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-info me-1" onclick="openEditDishModal(${item.id})">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteDish(${item.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No menu items found.</td></tr>';
+        }
+    } catch (e) {
+        console.error('Failed to load menu admin', e);
+    }
+}
+
+function openEditDishModal(id) {
+    const item = window.adminMenuData.find(i => i.id == id);
+    if (!item) return;
+
+    document.getElementById('edit-dish-id').value = item.id;
+    document.getElementById('edit-dish-name').value = item.name;
+    document.getElementById('edit-dish-category').value = item.category;
+    document.getElementById('edit-dish-price').value = item.price;
+    document.getElementById('edit-dish-rating').value = item.rating;
+    document.getElementById('edit-dish-desc').value = item.description || '';
+    document.getElementById('edit-dish-available').checked = (item.is_available == 1);
+    document.getElementById('edit-dish-image').value = ''; // Reset file input
+
+    editDishModal.show();
+}
+
+async function submitEditDish() {
+    setLoading('btn-save-edit-dish', true, 'Saving...');
+    const id = document.getElementById('edit-dish-id').value;
+    const formData = new FormData();
+    
+    formData.append('name', document.getElementById('edit-dish-name').value);
+    formData.append('category', document.getElementById('edit-dish-category').value);
+    formData.append('price', document.getElementById('edit-dish-price').value);
+    formData.append('rating', document.getElementById('edit-dish-rating').value);
+    formData.append('description', document.getElementById('edit-dish-desc').value);
+    formData.append('is_available', document.getElementById('edit-dish-available').checked);
+    
+    const imageFile = document.getElementById('edit-dish-image').files[0];
+    if (imageFile) {
+        formData.append('image', imageFile);
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/menu/update/${id}`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+            showNotification('Dish updated successfully!', 'success');
+            editDishModal.hide();
+            loadMenuAdmin();
+        } else {
+            showNotification(data.error || 'Failed to update dish', 'danger');
+        }
+    } catch (e) {
+        console.error('Update dish failed', e);
+        showNotification('Update failed', 'danger');
+    }
+    setLoading('btn-save-edit-dish', false, 'Save Changes');
+}
+
+async function deleteDish(id) {
+    if (!confirm('Are you sure you want to delete this dish? This will make it unavailable for order.')) return;
+    
+    try {
+        const res = await fetch(`${API_BASE}/menu/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (res.ok) {
+            showNotification('Dish deleted successfully!', 'success');
+            loadMenuAdmin();
+        } else {
+            const data = await res.json();
+            showNotification(data.error || 'Failed to delete dish', 'danger');
+        }
+    } catch (e) {
+        console.error('Delete failed', e);
+        showNotification('Failed to delete dish', 'danger');
+    }
+}
 
 // -----------------------------------------------------------------------------
 // ADMIN FLOW
