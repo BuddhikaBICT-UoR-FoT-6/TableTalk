@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TableTalk - Kitchen</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="theme-color" content="#1a1a2e">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        .kitchen-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .order-card {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            padding: 20px;
+            border-top: 5px solid var(--primary-color);
+        }
+        .order-card.ready { border-top-color: var(--success-color); }
+        .order-card.preparing { border-top-color: var(--warning-color); }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .order-items {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        .order-items li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        select, input {
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 5px;
+        }
+        #login-view {
+            max-width: 400px;
+            margin: 100px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-view" class="view active">
+        <h2>Kitchen Login</h2>
+        <div class="controls">
+            <input type="email" id="email" value="chef@tabletalk.local" placeholder="Email">
+            <input type="password" id="password" value="password123" placeholder="Password">
+            <button class="btn primary" onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <div id="kitchen-view" class="view hidden kitchen-container">
+        <header>
+            <h1>Kitchen Display System</h1>
+            <button class="btn secondary" onclick="logout()">Logout</button>
+        </header>
+        <div class="order-grid" id="order-grid">
+            <!-- Orders populated here -->
+        </div>
+    </div>
+
+    <script src="js/kitchen.js"></script>
+</body>
+</html>

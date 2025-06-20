@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TableTalk - Order Now</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header>
+            <h1>TableTalk</h1>
+            <div id="table-info">Table <span id="table-number">...</span></div>
+        </header>
+
+        <!-- View: Menu -->
+        <section id="view-menu" class="view active">
+            <h2>Our Menu</h2>
+            <div class="menu-grid" id="menu-grid">
+                <!-- Items populated via JS -->
+            </div>
+            
+            <div class="cart-summary">
+                <div class="cart-info">
+                    <span>Total:</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                <button id="btn-place-order" class="btn primary" disabled>Place Order</button>
+            </div>
+        </section>
+
+        <!-- View: Order Status -->
+        <section id="view-status" class="view hidden">
+            <h2>Order Status</h2>
+            <div class="status-card">
+                <div class="status-indicator">
+                    <div class="spinner" id="status-spinner"></div>
+                    <h3 id="current-status">Pending</h3>
+                </div>
+                <p class="wait-time">Estimated Wait: <span id="wait-time">15</span> mins</p>
+            </div>
+        </section>
+
+        <!-- View: Payment -->
+        <section id="view-payment" class="view hidden">
+            <h2>Payment</h2>
+            <div class="payment-card">
+                <p>Your order has been served!</p>
+                <h3>Total Amount: <span id="payment-amount">$0.00</span></h3>
+                <div class="payment-methods">
+                    <button class="btn payment-btn" data-method="credit_card">Pay with Card</button>
+                    <button class="btn payment-btn" data-method="mobile_pay">Mobile Pay</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Feedback -->
+        <section id="view-feedback" class="view hidden">
+            <h2>How was your meal?</h2>
+            <div class="feedback-card">
+                <div class="stars" id="star-rating">
+                    <span data-value="1">★</span>
+                    <span data-value="2">★</span>
+                    <span data-value="3">★</span>
+                    <span data-value="4">★</span>
+                    <span data-value="5">★</span>
+                </div>
+                <textarea id="feedback-comment" placeholder="Leave a comment (optional)"></textarea>
+                <button id="btn-submit-feedback" class="btn primary">Submit Feedback</button>
+            </div>
+        </section>
+        
+        <!-- View: Thank You -->
+        <section id="view-thanks" class="view hidden">
+            <h2>Thank You!</h2>
+            <p>We hope to see you again soon.</p>
+            <button id="btn-new-order" class="btn secondary">Start New Order</button>
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW registered', reg))
+                .catch(err => console.log('SW error', err));
+        }
+    </script>
+</body>
+</html>
