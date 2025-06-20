@@ -1,4 +1,8 @@
 <?php
+/**
+ * Password fixing script.
+ * Updates the admin user password to a known hash ('password123') in the database.
+ */
 require_once 'Core/Database.php';
 
 use Core\Database;
