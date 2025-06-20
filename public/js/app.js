@@ -1110,6 +1110,8 @@ async function submitEditDish() {
         formData.append('image', imageFile);
     }
 
+    showNotification('Updating dish...', 'info');
+
     try {
         const res = await fetch(`${API_BASE}/menu/update/${id}`, {
             method: 'POST',
@@ -1135,6 +1137,8 @@ async function submitEditDish() {
 async function deleteDish(id) {
     if (!confirm('Are you sure you want to delete this dish? This will make it unavailable for order.')) return;
     
+    showNotification('Processing deletion...', 'warning');
+
     try {
         const res = await fetch(`${API_BASE}/menu/${id}`, {
             method: 'DELETE',
