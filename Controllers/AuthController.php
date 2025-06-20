@@ -5,6 +5,12 @@ use Core\JWT;
 use Models\User;
 
 class AuthController {
+    /**
+     * Authenticates a user (chef/admin) using email and password.
+     * Generates and returns a JWT if credentials are valid.
+     *
+     * @return void
+     */
     public function login() {
         $data = json_decode(file_get_contents("php://input"));
         
@@ -41,6 +47,11 @@ class AuthController {
         }
     }
 
+    /**
+     * Creates a customer session token associated with a specific table ID.
+     *
+     * @return void
+     */
     public function tableLogin() {
         // Generates a simple token for table sessions
         $data = json_decode(file_get_contents("php://input"));
