@@ -102,9 +102,11 @@
         <!-- VIEW: Payment (Customer) -->
         <div id="view-payment" class="view d-none flex-column align-items-center justify-content-center flex-grow-1">
             <div class="glass-card text-center w-100" style="max-width: 400px; transition: all 0.3s;" id="payment-card-body">
-                <h2 class="mb-3">Ready to Pay</h2>
-                <p class="text-muted mb-4">We hope you enjoyed your meal!</p>
-                <h3 id="payment-amount" class="display-5 fw-bold mb-5">$0.00</h3>
+                <div id="payment-header">
+                    <h2 class="mb-2">Ready to Pay</h2>
+                    <p class="text-muted mb-3">We hope you enjoyed your meal!</p>
+                    <h3 id="payment-amount" class="display-5 fw-bold mb-4">$0.00</h3>
+                </div>
                 
                 <div id="payment-methods-container" class="d-flex flex-column gap-3">
                     <button class="btn btn-lg btn-outline-light payment-btn" data-method="card">💳 Pay with Card</button>

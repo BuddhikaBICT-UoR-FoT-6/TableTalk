@@ -548,6 +548,7 @@ function processPayment(e) {
     const method = e.currentTarget.dataset.method;
     
     // Simulate payment process
+    document.getElementById('payment-header').classList.add('d-none');
     document.getElementById('payment-methods-container').classList.add('d-none');
     document.getElementById('payment-processing').classList.remove('d-none');
     
@@ -591,6 +592,7 @@ async function finishPayment(method) {
             
             document.getElementById('btn-proceed-feedback').onclick = () => {
                 // Reset payment UI
+                document.getElementById('payment-header').classList.remove('d-none');
                 document.getElementById('payment-methods-container').classList.remove('d-none');
                 document.getElementById('payment-success').classList.add('d-none');
                 showView('feedback');
@@ -634,10 +636,16 @@ async function finishPayment(method) {
                 }
                 btn.disabled = false;
             };
+        } else {
+            showNotification("Payment failed", "danger");
+            document.getElementById('payment-header').classList.remove('d-none');
+            document.getElementById('payment-processing').classList.add('d-none');
+            document.getElementById('payment-methods-container').classList.remove('d-none');
         }
     } catch (err) {
         console.error('Payment failed', err);
         showNotification("Payment failed", "danger");
+        document.getElementById('payment-header').classList.remove('d-none');
         document.getElementById('payment-processing').classList.add('d-none');
         document.getElementById('payment-methods-container').classList.remove('d-none');
     }
