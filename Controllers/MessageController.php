@@ -5,6 +5,12 @@ use Models\Message;
 use Core\JWT;
 
 class MessageController {
+    /**
+     * Creates and sends a new message.
+     * Determines if sender is customer or chef based on JWT token.
+     *
+     * @return void
+     */
     public function create() {
         $headers = getallheaders();
         $token = isset($headers['Authorization']) ? str_replace('Bearer ', '', $headers['Authorization']) : null;
@@ -39,6 +45,12 @@ class MessageController {
         }
     }
 
+    /**
+     * Gets unread messages sent by the chef to the customer table.
+     * Accessible by customers only.
+     *
+     * @return void
+     */
     public function getUnread() {
         // Table polls for messages
         $headers = getallheaders();
@@ -58,6 +70,12 @@ class MessageController {
         echo json_encode(['data' => $messages]);
     }
 
+    /**
+     * Gets all unread messages sent by tables to the chef.
+     * Accessible by chefs and admins.
+     *
+     * @return void
+     */
     public function getUnreadChef() {
         // Chef polls for messages from any table
         $headers = getallheaders();
@@ -77,6 +95,13 @@ class MessageController {
         echo json_encode(['data' => $messages]);
     }
 
+    /**
+     * Retrieves full chat history for a specific table.
+     * Customers are restricted to their own table history.
+     *
+     * @param array $params Contains route parameter keys, including 'id' of the table.
+     * @return void
+     */
     public function getHistory($params) {
         $headers = getallheaders();
         $token = isset($headers['Authorization']) ? str_replace('Bearer ', '', $headers['Authorization']) : null;
@@ -98,6 +123,13 @@ class MessageController {
         echo json_encode(['data' => $messages]);
     }
 
+    /**
+     * Marks a specific message as read.
+     * Accessible by authenticated users.
+     *
+     * @param array $params Contains route parameter keys, including 'id' of the message.
+     * @return void
+     */
     public function markRead($params) {
         $id = $params['id'];
         // Either side can mark as read
