@@ -545,7 +545,7 @@ window.showPaymentForOrder = function(orderId) {
 };
 
 function processPayment(e) {
-    const method = e.target.dataset.method;
+    const method = e.currentTarget.dataset.method;
     
     // Simulate payment process
     document.getElementById('payment-methods-container').classList.add('d-none');
@@ -569,7 +569,7 @@ let feedbackTimeout = null;
 
 async function finishPayment(method) {
     try {
-        const res = await fetch(`${API_BASE}/payment`, {
+        const res = await fetch(`${API_BASE}/payments`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -663,6 +663,18 @@ async function submitFeedback() {
     if (selectedRating === 0) return showNotification('Please select a star rating', 'warning');
     const comment = document.getElementById('feedback-comment').value;
 
+    let finalComment = comment.trim();
+    if (!finalComment) {
+        const defaults = {
+            1: "Very dissatisfied with the experience.",
+            2: "Below average experience.",
+            3: "Average experience.",
+            4: "Good experience, but room for improvement.",
+            5: "Excellent food and service!"
+        };
+        finalComment = defaults[selectedRating] || "No comment provided.";
+    }
+
     try {
         setLoading('btn-submit-feedback', true, 'Submitting...');
         const res = await fetch(`${API_BASE}/feedback`, {
@@ -674,7 +686,7 @@ async function submitFeedback() {
             body: JSON.stringify({
                 order_id: payingOrder.id,
                 rating: selectedRating,
-                comment: comment
+                comment: finalComment
             })
         });
         
@@ -1069,11 +1081,15 @@ async function loadFeedbackAdmin() {
         grid.innerHTML = data.recent.map(fb => `
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="glass-card h-100 border-secondary">
-                    <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex justify-content-between mb-2">
                         <span class="text-warning fs-5">${'★'.repeat(Math.round(fb.rating))}${'☆'.repeat(5 - Math.round(fb.rating))}</span>
                         <small class="text-muted">${new Date(fb.created_at).toLocaleDateString()}</small>
                     </div>
-                    <p class="mb-0 text-light">"${fb.comment || 'No comment provided.'}"</p>
+                    <p class="mb-3 text-light">"${fb.comment || 'No comment provided.'}"</p>
+                    <div class="mt-auto pt-3 border-top border-subtle">
+                        <small class="text-muted d-block mb-1">Items Ordered:</small>
+                        <small class="text-info">${fb.items_ordered || 'Unknown'}</small>
+                    </div>
                 </div>
             </div>
         `).join('');

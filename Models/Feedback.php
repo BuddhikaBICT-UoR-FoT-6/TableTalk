@@ -23,7 +23,13 @@ class Feedback {
     }
 
     public function getAll() {
-        $query = "SELECT f.*, o.table_id FROM " . $this->table . " f JOIN orders o ON f.order_id = o.id ORDER BY f.created_at DESC";
+        $query = "SELECT f.*, o.table_id, GROUP_CONCAT(mi.name SEPARATOR ', ') as items_ordered 
+                  FROM " . $this->table . " f 
+                  JOIN orders o ON f.order_id = o.id 
+                  LEFT JOIN order_items oi ON o.id = oi.order_id
+                  LEFT JOIN menu_items mi ON oi.menu_item_id = mi.id
+                  GROUP BY f.id
+                  ORDER BY f.created_at DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
