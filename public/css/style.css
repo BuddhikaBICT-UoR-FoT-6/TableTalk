@@ -18,6 +18,15 @@
     border-color: #000 !important;
 }
 
+[data-bs-theme="light"] .chat-bubble.received {
+    background: rgba(0, 0, 0, 0.05);
+    color: #000;
+}
+
+[data-bs-theme="light"] .chat-bubble.sent {
+    color: #fff; /* Keep white on the gradient */
+}
+
 [data-bs-theme="light"] {
     --bg-color: #f8fafc; /* Slate 50 */
     --surface-color: rgba(255, 255, 255, 0.85); /* White with transparency */
