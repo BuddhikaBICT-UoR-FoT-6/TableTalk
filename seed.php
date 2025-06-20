@@ -1,4 +1,9 @@
 <?php
+/**
+ * Database seeding script.
+ * Reads the schema.sql file and executes it on the MySQL server to set up
+ * the database tables and default admin user credentials.
+ */
 require_once 'Core/Database.php';
 
 use Core\Database;
