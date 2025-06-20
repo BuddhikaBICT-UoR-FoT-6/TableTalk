@@ -1,4 +1,9 @@
 <?php
+/**
+ * Database migration extension script.
+ * Adds the sender column to messages, adds the rating column to menu_items,
+ * and sets default ratings for existing items.
+ */
 require_once 'Core/Database.php';
 
 use Core\Database;
