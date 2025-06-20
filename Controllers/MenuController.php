@@ -86,7 +86,14 @@ class MenuController {
         echo json_encode(['data' => $items]);
     }
 
-    public function update($id) {
+    public function update($params) {
+        $id = $params['id'] ?? null;
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing ID parameter']);
+            return;
+        }
+
         $headers = getallheaders();
         $token = isset($headers['Authorization']) ? str_replace('Bearer ', '', $headers['Authorization']) : null;
         $decoded = \Core\JWT::decode($token);
@@ -138,7 +145,14 @@ class MenuController {
         }
     }
 
-    public function delete($id) {
+    public function delete($params) {
+        $id = $params['id'] ?? null;
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing ID parameter']);
+            return;
+        }
+
         $headers = getallheaders();
         $token = isset($headers['Authorization']) ? str_replace('Bearer ', '', $headers['Authorization']) : null;
         $decoded = \Core\JWT::decode($token);
