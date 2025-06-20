@@ -1,5 +1,9 @@
 <?php
 // migrate.php
+/**
+ * Database migration script.
+ * Creates the messages table if it does not already exist.
+ */
 require_once 'Core/Database.php';
 
 use Core\Database;
