@@ -8,11 +8,26 @@ class Payment {
     private $conn;
     private $table = 'payments';
 
+    /**
+     * Payment constructor.
+     * Initializes the database connection.
+     */
     public function __construct() {
         $db = new Database();
         $this->conn = $db->connect();
     }
 
+    /**
+     * Processes a payment transaction for an order.
+     * 
+     * Creates a payment record and updates the order status to 'paid' 
+     * within a single database transaction. Rolls back in case of failure.
+     *
+     * @param int $order_id The ID of the order.
+     * @param float $amount The payment amount.
+     * @param string $method The payment method (e.g. Card, Cash).
+     * @return bool True on success, false on failure.
+     */
     public function process($order_id, $amount, $method) {
         try {
             $this->conn->beginTransaction();
