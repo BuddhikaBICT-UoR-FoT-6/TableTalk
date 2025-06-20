@@ -1081,7 +1081,7 @@ async function loadFeedbackAdmin() {
         const data = await res.json();
         
         // Update Stats
-        document.getElementById('fb-avg-rating').textContent = parseFloat(data.stats.avg_rating || 0).toFixed(1) + ' ★';
+        document.getElementById('fb-avg-rating').textContent = parseFloat(data.stats.average_rating || 0).toFixed(1) + ' ★';
         document.getElementById('fb-total-reviews').textContent = data.stats.total_reviews || 0;
 
         // Update Grid
