@@ -4,6 +4,12 @@ namespace Core;
 class JWT {
     private static $secret = 'super_secret_tabletalk_key_2025';
 
+    /**
+     * Encodes a payload into a JWT (JSON Web Token) string using HS256.
+     *
+     * @param array $payload The associative array containing claims.
+     * @return string The signed JWT string.
+     */
     public static function encode($payload) {
         $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
         $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
@@ -16,6 +22,12 @@ class JWT {
         return $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
     }
 
+    /**
+     * Decodes and validates a JWT string.
+     *
+     * @param string $jwt The JWT token to decode.
+     * @return array|false The decoded payload as an associative array, or false if invalid/expired.
+     */
     public static function decode($jwt) {
         $parts = explode('.', $jwt);
         if (count($parts) !== 3) {
@@ -41,6 +53,11 @@ class JWT {
         return false;
     }
 
+    /**
+     * Retrieves the Bearer token from the HTTP Authorization header.
+     *
+     * @return string|null The extracted token, or null if not found.
+     */
     public static function getBearerToken() {
         $headers = null;
         if (isset($_SERVER['Authorization'])) {
@@ -63,6 +80,13 @@ class JWT {
         return null;
     }
 
+    /**
+     * Validates the request's Bearer token and checks if the user's role is authorized.
+     * Terminate request with 401/403 if validation fails.
+     *
+     * @param array $allowedRoles Array of allowed roles (e.g. ['admin', 'customer']).
+     * @return array The decoded token payload.
+     */
     public static function requireRole($allowedRoles) {
         $token = self::getBearerToken();
         if (!$token) {
