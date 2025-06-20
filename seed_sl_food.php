@@ -1,4 +1,9 @@
 <?php
+/**
+ * Sri Lankan food database seeding script.
+ * Alters the orders table to include a notes field, and inserts
+ * initial authentic Sri Lankan menu item records (Kottu, Hoppers, etc.).
+ */
 require_once 'Core/Database.php';
 
 use Core\Database;
