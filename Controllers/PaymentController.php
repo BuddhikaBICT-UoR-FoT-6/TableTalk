@@ -6,6 +6,13 @@ use Models\Order;
 use Models\Payment;
 
 class PaymentController {
+    /**
+     * Processes payment for a customer order.
+     * Validates that the order exists, status is served, and the payment amount matches.
+     * On success, clears chat history if no other active orders exist for the table.
+     *
+     * @return void
+     */
     public function process() {
         // Customer or admin can trigger payment
         $tokenPayload = JWT::requireRole(['customer', 'admin']);
