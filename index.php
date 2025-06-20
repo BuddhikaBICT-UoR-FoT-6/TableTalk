@@ -16,6 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // Simple autoloader for namespace
+/**
+ * Automatically loads classes based on their namespaces by mapping
+ * backslashes to directory separators.
+ */
 spl_autoload_register(function ($class) {
     $classFile = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
     $file = __DIR__ . '/' . $classFile;
